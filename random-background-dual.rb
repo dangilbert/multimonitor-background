@@ -7,8 +7,8 @@ Bundler.require(:default)
 require 'open-uri'
 require 'nokogiri'
 
-wallpaper_root = "#{ENV["HOME"]}/Wallpaper/Triple"
-base_url = "http://www.triplemonitorbackgrounds.com"
+wallpaper_root = "#{ENV["HOME"]}/Wallpaper/Dual"
+base_url = "http://www.dualmonitorbackgrounds.com"
 category = "nature"
 
 reached_end = false
@@ -32,7 +32,7 @@ chosen_image = thumbnails_list.sample
 chosen_image_doc = Nokogiri::HTML(open("#{base_url}/#{chosen_image}"))
 wallpaper_name = chosen_image["#{category}/".length + 1, chosen_image.length]
 wallpaper_name = wallpaper_name[0, wallpaper_name.length - 8]
-screens = ["left", "center", "right"]
+screens = ["left", "right"]
 parts = chosen_image_doc.css("#DownloadOptions a").map { |part| "#{base_url}#{part.attributes["href"].value}" }
 
 parts.each_index do |index|
@@ -49,11 +49,8 @@ end
 
 osascript <<-END
  tell application "System Events"
-	tell desktop 3
-		set picture to "#{wallpaper_root}/#{wallpaper_name}-left.jpg"
-	end tell
 	tell desktop 1
-		set picture to "#{wallpaper_root}/#{wallpaper_name}-center.jpg"
+		set picture to "#{wallpaper_root}/#{wallpaper_name}-left.jpg"
 	end tell
 	tell desktop 2
 		set picture to "#{wallpaper_root}/#{wallpaper_name}-right.jpg"
