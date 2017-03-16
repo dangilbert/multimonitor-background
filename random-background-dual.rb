@@ -9,7 +9,7 @@ require 'nokogiri'
 require 'yaml'
 require 'optparse'
 
-wallpaper_root = "#{ENV["HOME"]}/Wallpaper/Dual"
+options[:wallpaper_dir] = "#{ENV["HOME"]}/Wallpaper/Dual"
 base_url = "http://www.dualmonitorbackgrounds.com"
 
 # Load args
@@ -30,10 +30,12 @@ OptionParser.new do |opts|
   " science-fiction"
   ) { |v| options[:category] = v }
   opts.on('-r', '--refresh', 'Force a refresh of the list for this category') { |v| options[:refresh] = v }
+  opts.on('-d PATH', '--directory=PATH', 'Choose the directory for the images to be stored') { |v| options[:wallpaper_dir] = v }
 
 end.parse!
 
 category = options[:category]
+wallpaper_root = options[:wallpaper_dir]
 
 yaml_file = "#{category}-dual.yaml"
 

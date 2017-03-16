@@ -9,12 +9,12 @@ require 'nokogiri'
 require 'yaml'
 require 'optparse'
 
-wallpaper_root = "#{ENV["HOME"]}/Wallpaper/Triple"
 base_url = "http://www.triplemonitorbackgrounds.com"
 
 # Load args
 options = {}
 options[:category] = "nature"
+options[:wallpaper_dir] = "#{ENV["HOME"]}/Wallpaper/Triple"
 OptionParser.new do |opts|
   opts.banner = "Usage: example.rb [options]"
 
@@ -30,10 +30,12 @@ OptionParser.new do |opts|
   " science-fiction"
   ) { |v| options[:category] = v }
   opts.on('-r', '--refresh', 'Force a refresh of the list for this category') { |v| options[:refresh] = v }
+  opts.on('-d PATH', '--directory=PATH', 'Choose the directory for the images to be stored') { |v| options[:wallpaper_dir] = v }
 
 end.parse!
 
 category = options[:category]
+wallpaper_root = options[:wallpaper_dir]
 
 yaml_file = "#{category}-triple.yaml"
 
