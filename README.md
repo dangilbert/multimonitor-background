@@ -5,7 +5,14 @@ Download multi monitor images and set them to the correct monitors on your mac.
 ## Usage
 
     bundle install
+
+Triple monitors:
+
     ./random-background.rb
+
+Dual monitors:
+
+    ./random-background-dual.rb
 
 There are optional arguments to customise the backgrounds
 
