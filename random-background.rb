@@ -6,24 +6,59 @@ Bundler.require(:default)
 
 require 'open-uri'
 require 'nokogiri'
+require 'yaml'
+require 'optparse'
 
 wallpaper_root = "#{ENV["HOME"]}/Wallpaper/Triple"
 base_url = "http://www.triplemonitorbackgrounds.com"
-category = "nature"
+
+# Load args
+options = {}
+options[:category] = "nature"
+OptionParser.new do |opts|
+  opts.banner = "Usage: example.rb [options]"
+
+  opts.on('-c NAME', '--category=NAME', 'Category name (choose one)',
+  " abstract",
+  " animals",
+  " astronomy",
+  " computers",
+  " crafted-nature",
+  " nature",
+  " celebrities",
+  " popular-culture",
+  " science-fiction"
+  ) { |v| options[:category] = v }
+  opts.on('-r', '--refresh', 'Force a refresh of the list for this category') { |v| options[:refresh] = v }
+
+end.parse!
+
+category = options[:category]
+
+yaml_file = "#{category}.yaml"
 
 reached_end = false
-thumbnails_list = []
-i = 1
+if File.file?(yaml_file) then
+  thumbnails_list = YAML.load_file(yaml_file)
+else
+  thumbnails_list = []
+end
 
-until reached_end
-  @html_doc = Nokogiri::HTML(open("#{base_url}/#{category}/page/#{i}"))
+if thumbnails_list.length == 0 || options[:refresh] then
+  i = 1
 
-  new_items = @html_doc.css("li.image a").map { |thumbnail| thumbnail.attributes["href"].value }.uniq
-  thumbnails_list.concat(new_items)
-  if new_items.count < 20
-    reached_end = true
+  until reached_end
+    @html_doc = Nokogiri::HTML(open("#{base_url}/#{category}/page/#{i}"))
+
+    new_items = @html_doc.css("li.image a").map { |thumbnail| thumbnail.attributes["href"].value }.uniq
+    thumbnails_list.concat(new_items)
+    if new_items.count < 1
+      reached_end = true
+    end
+    i += 1
   end
-  i += 1
+
+  File.open(yaml_file, 'w') { |file| file.write(thumbnails_list.to_yaml) }
 end
 
 # Pick a random image
@@ -35,10 +70,15 @@ wallpaper_name = wallpaper_name[0, wallpaper_name.length - 8]
 screens = ["left", "center", "right"]
 parts = chosen_image_doc.css("#DownloadOptions a").map { |part| "#{base_url}#{part.attributes["href"].value}" }
 
+puts "Downloading wallpaper: #{wallpaper_name}"
+
 parts.each_index do |index|
-  open("#{wallpaper_root}/#{wallpaper_name}-#{screens[index]}.jpg", "wb") do |file|
-    open(parts[index]) do |uri|
-      file.write(uri.read)
+  image_filename = "#{wallpaper_root}/#{wallpaper_name}-#{screens[index]}.jpg"
+  unless File.file?(image_filename) then
+    open(image_filename, "wb") do |file|
+      open(parts[index]) do |uri|
+        file.write(uri.read)
+      end
     end
   end
 end
