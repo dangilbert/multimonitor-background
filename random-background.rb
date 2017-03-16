@@ -35,7 +35,7 @@ end.parse!
 
 category = options[:category]
 
-yaml_file = "#{category}.yaml"
+yaml_file = "#{category}-triple.yaml"
 
 reached_end = false
 if File.file?(yaml_file) then
