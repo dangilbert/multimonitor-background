@@ -9,7 +9,7 @@ Download multi monitor images and set them to the correct monitors on your mac.
 
 There are optional arguments to customise the backgrounds
 
-> -c NAME,--category=NAME - Choose the category of background you want. Any of the category paths on www.triplemonitorbackgrounds.com will work
+> -c NAME,--category=NAME - Choose the category of background you want. Any of the category paths on www.triplemonitorbackgrounds.com will work  
 > -r,--refresh - Forces the selected category's background list to refresh  
 > -d PATH,--directory=PATH - Choose the download directory for the images
 
